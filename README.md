@@ -1,16 +1,30 @@
 # AryaFlex Insulation Calculator
 
-A smart AI-based thermal insulation calculator for HVAC systems.
+An AI-based thermal insulation calculator designed for HVAC and piping systems.
 
-## Features
+## 🔧 Features
 - Energy loss calculation
-- Condensation analysis
-- AI-based insulation thickness
-- Freeze protection (time-based)
+- Condensation risk analysis
+- AI-based insulation thickness selection
+- Freeze protection (time-based, stagnant water)
 - Dark / Light mode
+- Engineering-grade validation
 
-## Usage
-Open `index.html` in a browser or use the live demo.
+## 🧠 AI Logic
+The system uses multi-criteria decision making:
+- Energy efficiency
+- Condensation prevention
+- Freeze protection (hour-based)
+- Over-design avoidance
 
-## Author
+## ❄️ Freeze Protection
+Calculate minimum insulation thickness required to prevent freezing
+for a specified number of hours under given ambient conditions.
+
+## 🚀 Usage
+Open `AryaFlex calc final v2.html` in any modern browser  
+or use the live demo via GitHub Pages.
+
+## 👤 Author
+ArefAsk
 AryaFlex
