@@ -1,0 +1,966 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AryaFlex Calculator</title>
+    <style>
+        :root {
+            --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card: #ffffff;
+            --text: #111827;
+            --sub: #6b7280;
+            --accent: #667eea;
+            --accent-dark: #764ba2;
+            --accent-soft: #e0e7ff;
+            --border: #e5e7eb;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --card-hover: linear-gradient(135deg, #e0e7ff 0%, #f3e8ff 100%);
+        }
+
+        body.dark {
+            --bg: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            --card: #1e293b;
+            --text: #e5e7eb;
+            --sub: #94a3b8;
+            --accent: #818cf8;
+            --accent-dark: #a78bfa;
+            --accent-soft: #1e293b;
+            --border: #334155;
+            --success: #22c55e;
+            --warning: #fbbf24;
+            --danger: #f87171;
+            --card-hover: linear-gradient(135deg, #334155 0%, #4c1d95 100%);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            background: var(--bg);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: var(--text);
+            transition: all 0.3s ease;
+        }
+
+        .container {
+            background: var(--card);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,.3);
+            padding: 32px;
+            max-width: 500px;
+            width: 100%;
+            animation: fadeIn 0.5s;
+            transition: all 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .title-section h1 {
+            color: var(--accent);
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: var(--sub);
+            font-weight: 500;
+        }
+
+        .theme-toggle {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            background: var(--accent-soft);
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: rotate(180deg) scale(1.1);
+            background: var(--accent);
+        }
+
+        h2 {
+            text-align: center;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .card {
+            height: 120px;
+            background: var(--card-hover);
+            border: 2px solid var(--border);
+            border-radius: 16px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(102,126,234,.3);
+            border-color: var(--accent);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: var(--accent-soft);
+            border: 2px solid var(--border);
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--text);
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #fff;
+            border-color: transparent;
+        }
+
+        .tab-btn:hover:not(.active) {
+            border-color: var(--accent);
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--sub);
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            background: var(--card);
+            color: var(--text);
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .flex-row select {
+            width: 80px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102,126,234,.4);
+        }
+
+        .result {
+            background: var(--accent-soft);
+            border-right: 4px solid var(--success);
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            animation: slideIn 0.4s;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            align-items: center;
+        }
+
+        .result-row strong {
+            color: var(--text);
+        }
+
+        .result-row span {
+            font-weight: 600;
+        }
+
+        .progress-bar {
+            height: 24px;
+            background: var(--border);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--success), #059669);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            transition: width 0.5s;
+        }
+
+        .info-box, .warning-box, .danger-box {
+            padding: 12px;
+            border-radius: 12px;
+            margin-top: 12px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .info-box {
+            background: rgba(59, 130, 246, 0.1);
+            border-right: 4px solid #3b82f6;
+            color: var(--text);
+        }
+
+        .warning-box {
+            background: rgba(245, 158, 11, 0.1);
+            border-right: 4px solid var(--warning);
+            color: var(--text);
+        }
+
+        .danger-box {
+            background: rgba(239, 68, 68, 0.1);
+            border-right: 4px solid var(--danger);
+            color: var(--text);
+        }
+
+        .back-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 2px solid var(--border);
+            cursor: pointer;
+            background: var(--accent-soft);
+            color: var(--text);
+            font-size: 20px;
+            font-weight: 700;
+            transition: all 0.3s;
+        }
+
+        .back-btn:hover {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+            color: #fff;
+            transform: scale(1.1);
+        }
+
+        .unit-badge {
+            display: inline-block;
+            background: var(--border);
+            color: var(--text);
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .page-title {
+            margin: 0;
+            font-size: 20px;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<script>
+const body = document.body;
+if (localStorage.theme === "dark") body.classList.add("dark");
+
+const toggleTheme = () => {
+    body.classList.toggle("dark");
+    localStorage.theme = body.classList.contains("dark") ? "dark" : "light";
+};
+
+const app = {
+    control: null,
+    insul: null,
+    tab: 'energy',
+    fluid: 60,
+    ambient: 30,
+    humid: 70,
+    thick: 30,
+    dia: 4,
+    diaUnit: 'inch',
+    len: 1,
+    K: 0.034,
+    freezeTargetHours: 4,
+    result: null,
+
+    toMM(v, u) {
+        return u === 'inch' ? v * 25.4 : v;
+    },
+
+    dewPoint() {
+        if (this.humid < 1) return -100;
+        const a = 17.27, b = 237.7;
+        const x = (a * this.ambient) / (b + this.ambient) + Math.log(this.humid / 100);
+        return (b * x) / (a - x);
+    },
+
+    validate() {
+        if (this.control === 'cold' && this.fluid >= this.ambient) {
+            return {
+                title: 'خطای فیزیکی سیستم',
+                msg: 'در سیستم سرمایشی، دمای سیال باید کمتر از دمای محیط باشد'
+            };
+        }
+
+        if (this.control === 'hot' && this.fluid <= this.ambient) {
+            return {
+                title: 'خطای فیزیکی سیستم',
+                msg: 'در سیستم گرمایشی، دمای سیال باید بیشتر از دمای محیط باشد'
+            };
+        }
+
+        if (this.humid < 0 || this.humid > 100) {
+            return {
+                title: 'رطوبت نامعتبر',
+                msg: 'رطوبت نسبی باید بین 0 تا 100 درصد باشد'
+            };
+        }
+
+        if (this.insul === 'pipe' && this.dia <= 0) {
+            return {
+                title: 'قطر نامعتبر',
+                msg: 'قطر لوله باید بزرگتر از صفر باشد'
+            };
+        }
+
+        if (this.tab !== 'thickness' && this.thick <= 0) {
+            return {
+                title: 'ضخامت نامعتبر',
+                msg: 'ضخامت عایق باید بزرگتر از صفر باشد'
+            };
+        }
+
+        if (this.K <= 0) {
+            return {
+                title: 'ضریب هدایت نامعتبر',
+                msg: 'ضریب هدایت حرارتی باید بزرگتر از صفر باشد'
+            };
+        }
+
+        if (this.insul === 'pipe' && this.control === 'hot' && this.len <= 0) {
+            return {
+                title: 'طول نامعتبر',
+                msg: 'طول لوله باید بزرگتر از صفر باشد'
+            };
+        }
+
+        return null;
+    },
+
+    surfTemp(t) {
+        const h = 8;
+        const dT = this.fluid - this.ambient;
+        const d1 = this.toMM(this.dia, this.diaUnit) / 1000;
+        const d2 = (this.toMM(this.dia, this.diaUnit) + 2 * t) / 1000;
+
+        if (this.insul === 'pipe') {
+            const Rcond = Math.log(d2 / d1) / (2 * Math.PI * this.K);
+            const Rconv = 1 / (h * Math.PI * d2);
+            const q = dT / (Rcond + Rconv);
+            return this.fluid - q * Rcond;
+        } else {
+            const Rcond = (t / 1000) / this.K;
+            const Rconv = 1 / h;
+            const q = dT / (Rcond + Rconv);
+            return this.fluid - q * Rcond;
+        }
+    },
+
+    heatLoss(t) {
+        t = t || this.thick;
+        const dT = Math.abs(this.fluid - this.ambient);
+        if (dT < 0.1) return { q0: '0.00', q1: '0.00', q0r: 0, q1r: 0 };
+
+        const h = 10;
+        const d1 = this.toMM(this.dia, this.diaUnit) / 1000;
+        const d2 = (this.toMM(this.dia, this.diaUnit) + 2 * t) / 1000;
+
+        let q0, q1;
+
+        if (this.insul === 'pipe') {
+            q0 = h * Math.PI * d1 * dT;
+            const Rcond = Math.log(d2 / d1) / (2 * Math.PI * this.K);
+            const Rconv = 1 / (h * Math.PI * d2);
+            q1 = dT / (Rcond + Rconv);
+        } else {
+            q0 = h * dT;
+            const Rcond = (t / 1000) / this.K;
+            const Rconv = 1 / h;
+            q1 = dT / (Rcond + Rconv);
+        }
+
+        if (this.control === 'hot' && this.insul === 'pipe') {
+            q0 *= this.len;
+            q1 *= this.len;
+        }
+
+        return { q0: q0.toFixed(2), q1: q1.toFixed(2), q0r: q0, q1r: q1 };
+    },
+
+    freezeTimeHours(t) {
+        if (this.control !== 'hot') return Infinity;
+        if (this.insul !== 'pipe') return Infinity;
+
+        const T0 = this.fluid;
+        const Tamb = this.ambient;
+
+        if (Tamb >= 0) return Infinity;
+
+        const hl = this.heatLoss(t);
+        const Q = parseFloat(hl.q1) || hl.q1r;
+
+        if (Q <= 0) return Infinity;
+
+        const d = this.toMM(this.dia, this.diaUnit) / 1000;
+        const volume = Math.PI * Math.pow(d / 2, 2) * this.len;
+        const m = volume * 1000;
+
+        const Cp = 4180;
+        const deltaT = T0 - 0;
+
+        const E = m * Cp * deltaT;
+        const t_sec = E / Q;
+
+        return t_sec / 3600;
+    },
+
+    minThicknessForFreezeHours(hours) {
+        if (this.control !== 'hot') return null;
+        if (this.insul !== 'pipe') return null;
+        if (this.ambient >= 0) return 0;
+
+        for (let t = 10; t <= 150; t++) {
+            const freezeH = this.freezeTimeHours(t);
+            if (freezeH >= hours) {
+                return t;
+            }
+        }
+        return null; // حتی 150mm هم کافی نیست
+    },
+
+    savings(t) {
+        const hl = this.heatLoss(t);
+        if (!hl.q0r || hl.q0r === 0) return 0;
+        return Math.max(0, Math.min(100, (hl.q0r - hl.q1r) / hl.q0r * 100));
+    },
+
+    aiSuggestThickness() {
+        const dp = this.dewPoint();
+        let best = null;
+
+        for (let t = 10; t <= 150; t++) {
+            const s = this.savings(t);
+            const st = this.surfTemp(t);
+
+            let score = 0;
+
+            // Energy saving (different weights for heating/cooling)
+            if (this.control === 'hot') {
+                score += Math.min(s, 80) * 0.3; // More conservative for heating
+            } else {
+                score += Math.min(s, 80) * 0.4; // More energy-focused for cooling
+            }
+
+            // Condensation check (for cold systems)
+            if (this.control === 'cold') {
+                if (st > dp + 2) score += 30;
+                else if (st > dp) score += 15;
+                else score -= 100;
+            }
+
+            // Heating system optimization
+            if (this.control === 'hot') {
+                // Minimum safe thickness for heating systems
+                if (t < 13) {
+                    score -= 100;
+                }
+
+                // Optimal savings zone (not maximum)
+                if (s >= 70 && s <= 85) {
+                    score += 25;
+                }
+
+                // Freeze time check (only for pipes)
+                if (this.insul === 'pipe') {
+                    const freezeHours = this.freezeTimeHours(t);
+                    if (freezeHours < 4) {
+                        score -= 100;
+                    }
+                }
+
+                // Penalty for low savings
+                if (s < 60) {
+                    score -= 50;
+                }
+
+                // Penalty for over-design
+                if (t > 80 && s < 80) {
+                    score -= 20;
+                }
+            }
+
+            // Efficiency ratio
+            score += (s / t) * 20;
+
+            // Penalty for excessive thickness
+            if (t > 80) score -= (t - 80) * 0.3;
+
+            if (!best || score > best.score) {
+                best = { t, score, s, st };
+            }
+        }
+
+        return best ? {
+            thickness: best.t,
+            saving: best.s.toFixed(1),
+            surf: best.st.toFixed(1)
+        } : null;
+    },
+
+    calculate() {
+        const err = this.validate();
+        if (err) {
+            this.result = {
+                type: 'error',
+                title: err.title,
+                msg: err.msg
+            };
+            this.render();
+            return;
+        }
+
+        if (this.tab === 'energy') {
+            const hl = this.heatLoss();
+            this.result = {
+                type: 'energy',
+                q0: hl.q0,
+                q1: hl.q1,
+                s: this.savings(this.thick).toFixed(1)
+            };
+        }
+
+        if (this.tab === 'condensation') {
+            const st = this.surfTemp(this.thick);
+            const dp = this.dewPoint();
+            this.result = {
+                type: 'condensation',
+                st: st.toFixed(1),
+                dp: dp.toFixed(1),
+                diff: (st - dp).toFixed(1),
+                r: st <= dp ? 'بله' : 'خیر'
+            };
+        }
+
+        if (this.tab === 'thickness') {
+            const ai = this.aiSuggestThickness();
+
+            if (!ai) {
+                this.result = {
+                    type: 'thickness',
+                    error: true
+                };
+            } else {
+                const minT = this.minThicknessForFreezeHours(this.freezeTargetHours);
+
+                this.result = {
+                    type: 'thickness',
+                    t: ai.thickness,
+                    s: ai.saving,
+                    st: ai.surf,
+                    freezeMinT: minT,
+                    freezeTarget: this.freezeTargetHours
+                };
+            }
+        }
+
+        this.render();
+    },
+
+    renderResult() {
+        if (!this.result) return '';
+
+        if (this.result.type === 'error') {
+            return `
+                <div class="danger-box">
+                    <strong>⚠️ ${this.result.title}</strong>
+                    <br>
+                    ${this.result.msg}
+                </div>
+            `;
+        }
+
+        if (this.result.type === 'energy') {
+            const savingsPercent = parseFloat(this.result.s);
+            return `
+                <div class="result">
+                    <div class="result-row">
+                        <strong>📊 اتلاف بدون عایق:</strong>
+                        <span>${this.result.q0} <span class="unit-badge">${this.insul === 'pipe' ? 'W/m' : 'W/m²'}</span></span>
+                    </div>
+                    <div class="result-row">
+                        <strong>🔒 اتلاف با عایق:</strong>
+                        <span>${this.result.q1} <span class="unit-badge">${this.insul === 'pipe' ? 'W/m' : 'W/m²'}</span></span>
+                    </div>
+                    <div class="result-row">
+                        <strong>💰 صرفه‌جویی انرژی:</strong>
+                        <span>${this.result.s}%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${this.result.s}%">${this.result.s}%</div>
+                    </div>
+                </div>
+                ${savingsPercent >= 70 ? '<div class="info-box">✅ عملکرد عالی! صرفه‌جویی بسیار خوب در انرژی</div>' : 
+                  savingsPercent >= 50 ? '<div class="warning-box">⚠️ عملکرد متوسط. افزایش ضخامت عایق توصیه می‌شود</div>' : 
+                  '<div class="danger-box">❌ عملکرد ضعیف. حتماً ضخامت عایق را افزایش دهید</div>'}
+            `;
+        }
+
+        if (this.result.type === 'condensation') {
+            const hasCondensation = this.result.r === 'بله';
+            return `
+                <div class="result">
+                    <div class="result-row">
+                        <strong>🌡️ دمای سطح عایق:</strong>
+                        <span>${this.result.st}°C</span>
+                    </div>
+                    <div class="result-row">
+                        <strong>💧 نقطه شبنم:</strong>
+                        <span>${this.result.dp}°C</span>
+                    </div>
+                    <div class="result-row">
+                        <strong>❓ احتمال میعان:</strong>
+                        <span style="font-size: 16px;">
+                            ${this.result.r}
+                        </span>
+                    </div>
+                </div>
+                ${hasCondensation ? 
+                    '<div class="danger-box">⚠️ خطر میعان! ضخامت عایق را افزایش دهید یا از بخش "ضخامت بهینه" استفاده کنید</div>' : 
+                    '<div class="info-box">✅ عایق‌کاری مناسب! احتمال میعان وجود ندارد</div>'}
+            `;
+        }
+
+        if (this.result.type === 'thickness') {
+            if (this.result.error) {
+                return `
+                    <div class="danger-box">
+                        ❌ AI نتوانست ضخامت مناسبی پیشنهاد دهد. پارامترها را بررسی کنید.
+                    </div>
+                `;
+            }
+
+            const freezeHours = this.freezeTimeHours(this.result.t);
+
+            return `
+                <div class="result">
+                    <div class="result-row">
+                        <strong>🤖 ضخامت پیشنهادی AI:</strong>
+                        <span style="font-size:18px;">
+                            ${this.result.t} <span class="unit-badge">mm</span>
+                        </span>
+                    </div>
+                    <div class="result-row">
+                        <strong>💰 صرفه‌جویی انرژی:</strong>
+                        <span>${this.result.s}%</span>
+                    </div>
+                    <div class="result-row">
+                        <strong>🌡️ دمای سطح:</strong>
+                        <span>${this.result.st}°C</span>
+                    </div>
+                </div>
+                ${this.control === 'hot' && this.insul === 'pipe' ? (
+                    this.ambient >= 0 ? `
+                        <div class="info-box">
+                            🧊 محیط بالای صفر است — خطر یخ‌زدگی وجود ندارد
+                        </div>
+                    ` : freezeHours < 4 ? `
+                        <div class="danger-box">
+                            🚨 خطر یخ‌زدگی!
+                            <br>
+                            ⏱️ زمان تقریبی یخ‌زدگی: <strong>${freezeHours.toFixed(1)} ساعت</strong>
+                            <br>
+                            🔧 افزایش ضخامت عایق توصیه می‌شود
+                        </div>
+                    ` : `
+                        <div class="info-box">
+                            🧊 ایمن در برابر یخ‌زدگی
+                            <br>
+                            ⏱️ زمان تقریبی یخ‌زدگی: <strong>${freezeHours.toFixed(1)} ساعت</strong>
+                        </div>
+                    `
+                ) : ''}
+                ${this.control === 'hot' && this.insul === 'pipe' ? (
+                    this.result.freezeMinT === null ? `
+                        <div class="danger-box">
+                            ❌ حتی با 150mm عایق، تا ${this.result.freezeTarget} ساعت ایمن نیست
+                            <br>
+                            💡 پیشنهاد: افزایش دمای سیال یا استفاده از سیستم گرمایش فعال
+                        </div>
+                    ` : this.result.freezeMinT === 0 ? `
+                        <div class="info-box">
+                            🧊 محیط بالای صفر است — نیازی به محاسبه ضخامت ضد یخ نیست
+                        </div>
+                    ` : `
+                        <div class="info-box">
+                            🧊 حداقل ضخامت ضد یخ برای
+                            <strong>${this.result.freezeTarget} ساعت</strong>:
+                            <br>
+                            <strong style="font-size:18px;">${this.result.freezeMinT} میلی‌متر</strong>
+                            ${this.result.t >= this.result.freezeMinT ? 
+                                '<br>✅ ضخامت پیشنهادی AI این شرط را برآورده می‌کند' :
+                                '<br>⚠️ توجه: ضخامت پیشنهادی AI کمتر از حداقل ضد یخ است'}
+                        </div>
+                    `
+                ) : ''}
+                <div class="info-box">
+                    💡 این ضخامت توسط الگوریتم هوشمند و با درنظر گرفتن انرژی، میعان و جلوگیری از over-design انتخاب شده است.
+                </div>
+            `;
+        }
+
+        return '';
+    },
+
+    render() {
+        const el = document.getElementById('app');
+        const isDark = body.classList.contains('dark');
+
+        if (!this.control) {
+            el.innerHTML = `
+                <div class="header">
+                    <div class="title-section">
+                        <h1>🔧 Arya Flex Calculator</h1>
+                        <div class="subtitle">ابزار مهندسی محاسبات عایق حرارتی</div>
+                    </div>
+                    <button class="theme-toggle" onclick="toggleTheme()">${isDark ? '☀️' : '🌙'}</button>
+                </div>
+                <h2>انتخاب نوع سیستم</h2>
+                <div class="grid">
+                    <div class="card" onclick="app.control='cold';app.render()">
+                        <div class="card-icon">❄️</div>
+                        سیستم سرمایشی
+                    </div>
+                    <div class="card" onclick="app.control='hot';app.render()">
+                        <div class="card-icon">🔥</div>
+                        سیستم گرمایشی
+                    </div>
+                </div>
+                <div class="info-box">
+                    این ماشین حساب به شما کمک می‌کند تا ضخامت بهینه عایق، میزان اتلاف انرژی و احتمال میعان را محاسبه کنید. از دکمه ${isDark ? '☀️' : '🌙'} برای تغییر تم استفاده کنید.
+                </div>
+            `;
+            return;
+        }
+
+        if (!this.insul) {
+            el.innerHTML = `
+                <div class="header">
+                    <h2 style="margin: 0; flex: 1;">انتخاب نوع عایق</h2>
+                    <button class="theme-toggle" onclick="toggleTheme()" style="margin: 0 8px;">${isDark ? '☀️' : '🌙'}</button>
+                    <button class="back-btn" onclick="app.control=null;app.insul=null;app.result=null;app.render()">←</button>
+                </div>
+                <div class="grid" style="margin-top: 20px;">
+                    <div class="card" onclick="app.insul='pipe';app.render()">
+                        <div class="card-icon">🔩</div>
+                        لوله
+                    </div>
+                    <div class="card" onclick="app.insul='sheet';app.render()">
+                        <div class="card-icon">📐</div>
+                        کانال / صفحه
+                    </div>
+                </div>
+            `;
+            return;
+        }
+
+        el.innerHTML = `
+            <div class="header">
+                <h1 class="page-title">
+                    ${this.control === 'hot' ? '🔥 گرمایشی' : '❄️ سرمایشی'} - 
+                    ${this.insul === 'pipe' ? '🔩 لوله' : '📐 کانال'}
+                </h1>
+                <button class="theme-toggle" onclick="toggleTheme()" style="margin: 0 8px;">${isDark ? '☀️' : '🌙'}</button>
+                <button class="back-btn" onclick="app.insul=null;app.result=null;app.render()">←</button>
+            </div>
+
+            <div class="tabs">
+                <button class="tab-btn ${this.tab === 'energy' ? 'active' : ''}" 
+                        onclick="app.tab='energy';app.result=null;app.render()">
+                    📊 تحلیل انرژی
+                </button>
+                ${this.control === 'cold' ? `
+                    <button class="tab-btn ${this.tab === 'condensation' ? 'active' : ''}" 
+                            onclick="app.tab='condensation';app.result=null;app.render()">
+                        💧 میعان
+                    </button>
+                ` : ''}
+                <button class="tab-btn ${this.tab === 'thickness' ? 'active' : ''}" 
+                        onclick="app.tab='thickness';app.result=null;app.render()">
+                    🤖 ضخامت بهینه
+                </button>
+            </div>
+
+            <div class="form-group">
+                <label>🌡️ دمای سیال (°C)</label>
+                <input type="number" value="${this.fluid}" 
+                       onchange="app.fluid=parseFloat(this.value);app.result=null">
+            </div>
+
+            <div class="form-group">
+                <label>🌍 دمای محیط (°C)</label>
+                <input type="number" value="${this.ambient}" 
+                       onchange="app.ambient=parseFloat(this.value);app.result=null">
+            </div>
+
+            <div class="form-group">
+                <label>💧 رطوبت نسبی (%)</label>
+                <input type="number" min="0" max="100" value="${this.humid}" 
+                       onchange="app.humid=parseFloat(this.value);app.result=null">
+            </div>
+
+            ${this.insul === 'pipe' ? `
+                <div class="form-group">
+                    <label>📏 قطر لوله</label>
+                    <div class="flex-row">
+                        <select onchange="app.diaUnit=this.value;app.result=null">
+                            <option value="mm" ${this.diaUnit === 'mm' ? 'selected' : ''}>mm</option>
+                            <option value="inch" ${this.diaUnit === 'inch' ? 'selected' : ''}>inch</option>
+                        </select>
+                        <input type="number" value="${this.dia}" 
+                               onchange="app.dia=parseFloat(this.value);app.result=null">
+                    </div>
+                </div>
+
+                ${this.control === 'hot' ? `
+                    <div class="form-group">
+                        <label>📐 طول لوله (متر)</label>
+                        <input type="number" value="${this.len}" 
+                               onchange="app.len=parseFloat(this.value);app.result=null">
+                    </div>
+                    <div class="form-group">
+                        <label>⏱️ مدت زمان بدون جریان (ساعت)</label>
+                        <input type="number" min="1" step="0.5"
+                               value="${this.freezeTargetHours}"
+                               onchange="app.freezeTargetHours=parseFloat(this.value);app.result=null">
+                    </div>
+                ` : ''}
+            ` : ''}
+
+            ${this.tab !== 'thickness' ? `
+                <div class="form-group">
+                    <label>🔧 ضخامت عایق (mm)</label>
+                    <input type="number" value="${this.thick}" 
+                           onchange="app.thick=parseFloat(this.value);app.result=null">
+                </div>
+            ` : ''}
+
+            <div class="form-group">
+                <label>🧊 ضریب هدایت حرارتی عایق (W/m·K)</label>
+                <input type="number" step="0.001" value="${this.K}" 
+                       onchange="app.K=parseFloat(this.value);app.result=null">
+            </div>
+
+            <button class="btn" onclick="app.calculate()">
+                🔍 محاسبه
+            </button>
+
+            ${this.renderResult()}
+        `;
+    }
+};
+
+app.render();
+</script>
+
+</body>
+</html>
