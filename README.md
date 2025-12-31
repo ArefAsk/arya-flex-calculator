@@ -25,6 +25,10 @@ for a specified number of hours under given ambient conditions.
 Open `AryaFlex calc final v2.html` in any modern browser  
 or use the live demo via GitHub Pages.
 
+## 📷 Screenshots
+
+![view of pages](image.png)
+
 ## 👤 Author
 ArefAsk
 AryaFlex
